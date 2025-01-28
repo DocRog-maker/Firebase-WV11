@@ -18,7 +18,6 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
 const provider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => {
@@ -55,7 +54,7 @@ export const generateUserDocument = async (user, additionalData) => {
   } catch (error) {
     console.error('Error creating user document', error);
   }
-  //}
+
   return getUserDocument(user.uid);
 };
 
@@ -99,41 +98,6 @@ export const addDocumentToSign = async (uid, email, docRef, emails) => {
     });
 };
 
-// //This is awkwardly placed
-// export const updateDocumentToSign = async (docId, email, xfdfSigned) => {
-
-//   const docRef1 = doc(db, 'documentsToSign', docId)
-
-//   const docSnap = await getDoc(docRef1).catch(function (error) {
-//     console.log('Error getting document:', error);
-//   });
-
-//   if (docSnap.exists) {
-//     const { signedBy, emails, xfdf, docRef } = docSnap.data();
-//     if (!signedBy.includes(email)) {
-//       const signedByArray = [...signedBy, email];
-//       const xfdfArray = [...xfdf, xfdfSigned];
-
-//       await updateDoc(docRef1, {
-//         xfdf: xfdfArray,
-//         signedBy: signedByArray,
-//       });
-
-//       if (signedByArray.length === emails.length) {
-//         const time = new Date();
-//         await updateDoc(docRef1, {
-//           signed: true,
-//           signedTime: time,
-//         });
-
-//         mergeAnnotations(docRef, xfdfArray);
-//       }
-//     }
-//   } else {
-//     console.log('No such document!');
-//   }
-// };
-
 export const searchForDocumentToSign = async email => {
   const documentsRef = collection(db, 'documentsToSign');
   const queryAllocated = query(documentsRef, where('emails', 'array-contains', email)
@@ -170,7 +134,6 @@ export const searchForDocumentToSign = async email => {
 
 export const searchForDocumentsSigned = async email => {
   const documentsRef = collection(db, 'documentsToSign');
-
   const docIds = [];
 
   const querySigned = query(documentsRef, where('email', '==', email), where('signed', '==', true));
@@ -192,14 +155,14 @@ export const getURL = async (docRef) => {
 }
 
 export const uploadBytesToDocRef = async (docRef, blob) => {
-  uploadBytes(docRef, blob).then(function (snapshot) {
+  await uploadBytes(docRef, blob).then(function (snapshot) {
     console.log('Uploaded the blob');
   });
 }
 export const uploadBytesToChild = async (docRef, blob) => {
   const docChildRef = ref(storage, docRef);
-  uploadBytesToDocRef(docChildRef, blob).then(function (snapshot) {
-    console.log('Uploaded the blob');
+  await uploadBytes(docChildRef, blob).then(function (snapshot) {
+    console.log('Uploaded the blob.');
   });
 }
 

@@ -11,7 +11,7 @@
       "postinstall": "node tools/copy-webviewer-files.js"
   },
   "dependencies": {
-    "@pdftron/webviewer": "^10.0.0",
+    "@pdftron/webviewer": "^11.0.0",
     "@reach/router": "^1.3.3",
     "@reduxjs/toolkit": "^1.3.6",
     "@testing-library/jest-dom": "^4.2.4",

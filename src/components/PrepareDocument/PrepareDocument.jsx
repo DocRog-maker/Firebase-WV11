@@ -41,7 +41,7 @@ const PrepareDocument = () => {
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
-    WebViewer(
+    WebViewer.Iframe(
       {
         path: 'webviewer',
         disabledElements: [
@@ -266,7 +266,7 @@ const PrepareDocument = () => {
     const data = await doc.getFileData({ xfdfString });
     const arr = new Uint8Array(data);
     const blob = new Blob([arr], { type: 'application/pdf' });
-    uploadBytesToDocRef(docRef, blob)
+    await uploadBytesToDocRef(docRef, blob)
 
     // create an entry in the database
     const emails = assignees.map(assignee => {

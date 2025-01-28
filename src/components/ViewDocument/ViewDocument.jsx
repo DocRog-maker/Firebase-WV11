@@ -20,7 +20,7 @@ const ViewDocument = () => {
   const viewer = useRef(null);
 
   useEffect(() => {
-    WebViewer(
+    WebViewer.Iframe(
       {
         path: 'webviewer',
         disabledElements: [

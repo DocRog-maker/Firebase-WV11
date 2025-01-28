@@ -25,10 +25,10 @@ const ProfilePage = () => {
   const { displayName, photoURL, email } = user;
 
 
-  const [dName, setDName]=useState("");
+  const [dNameForAvatar, setDName]=useState("");
   useEffect(() => {
     if (!displayName){
-      setDName ("Not specified")
+      setDName (Array.from(email)[0])
     }
     else{
       setDName(displayName)
@@ -47,10 +47,10 @@ const ProfilePage = () => {
         <Box padding={1}>
           <Row>
             <Box padding={1}>
-              <Avatar name={dName} size="md" src={photoURL} />
+              <Avatar name={dNameForAvatar} size="md" src={photoURL} />
             </Box>
             <Stack>
-              <Text weight="bold">{dName}</Text>
+              <Text weight="bold">{displayName}</Text>
               <Text>{email}</Text>
             </Stack>
             <Box padding={1}>
