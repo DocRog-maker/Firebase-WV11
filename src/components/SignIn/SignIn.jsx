@@ -76,14 +76,6 @@ const SignIn =  () => {
               Sign up here
             </Link>
           </Box>
-          <Box padding={2}>
-            <Link
-              to="passwordReset"
-              className="text-blue-500 hover:text-blue-600"
-            >
-              Forgot Password?
-            </Link>
-          </Box>
         </Container>
       </Box>
     </div>
