@@ -32,7 +32,7 @@ export const createUserWithEmailAndPwd = async (email, password) => {
 }
 
 export const signInWithEmailAndPwd = async (email, password) => {
- const user = await  signInWithEmailAndPassword(auth, email, password).catch(error => {
+  const user = await signInWithEmailAndPassword(auth, email, password).catch(error => {
     console.error("Error signing in with password and email", error);
   });
   return user;
@@ -102,9 +102,7 @@ export const searchForDocumentToSign = async email => {
   const documentsRef = collection(db, 'documentsToSign');
   const queryAllocated = query(documentsRef, where('emails', 'array-contains', email)
     , where('signed', '==', false));
-
   const querySigned = query(documentsRef, where('signedBy', 'array-contains', email));
-
   const docIds = [];
   const docIdSigned = [];
 
@@ -174,7 +172,7 @@ export const getDocRef = (referenceString) => {
   const docRef = ref(storage, referenceString);
   return docRef
 }
-export const getDocRefSimpleQuery= (path, pathSegments) => {
+export const getDocRefSimpleQuery = (path, pathSegments) => {
   const docRef = doc(db, path, pathSegments)
   return docRef
 }

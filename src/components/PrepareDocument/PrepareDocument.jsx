@@ -21,7 +21,6 @@ import './PrepareDocument.css';
 
 const PrepareDocument = () => {
   const [instance, setInstance] = useState(null);
-  const [dropPoint, setDropPoint] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -41,9 +40,10 @@ const PrepareDocument = () => {
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
-    WebViewer.Iframe(
+    WebViewer(
       {
         path: 'webviewer',
+        ui: 'legacy',
         disabledElements: [
           'ribbons',
           'toggleNotesButton',
@@ -53,18 +53,11 @@ const PrepareDocument = () => {
       },
       viewer.current,
     ).then(instance => {
-      const { iframeWindow } = instance.UI;
 
       // select only the view group
       instance.UI.setToolbarGroup('toolbarGroup-View');
 
       setInstance(instance);
-
-      const iframeDoc = iframeWindow.document.body;
-      iframeDoc.addEventListener('dragover', dragOver);
-      iframeDoc.addEventListener('drop', e => {
-        drop(e, instance);
-      });
 
       filePicker.current.onchange = e => {
         const file = e.target.files[0];
@@ -148,7 +141,7 @@ const PrepareDocument = () => {
                 },
               },
             );
-  
+
             inputAnnot = new Annotations.DatePickerWidgetAnnotation(field);
           } else {
             // exit early for other annotations
@@ -198,6 +191,9 @@ const PrepareDocument = () => {
 
     // refresh viewer
     await annotationManager.drawAnnotationsFromList(annotsToDraw);
+  }
+
+  const upload = async () => {
     await uploadForSigning();
   };
 
@@ -259,7 +255,7 @@ const PrepareDocument = () => {
     // upload the PDF with fields as AcroForm
 
     const referenceString = `docToSign/${uid}${Date.now()}.pdf`;
-    const docRef  = getDocRef(referenceString);
+    const docRef = getDocRef(referenceString);
     const { documentViewer, annotationManager } = instance.Core;
     const doc = documentViewer.getDocument();
     const xfdfString = await annotationManager.exportAnnotations({ widgets: true, fields: true });
@@ -275,40 +271,6 @@ const PrepareDocument = () => {
     await addDocumentToSign(uid, email, referenceString, emails);
     dispatch(resetSignee());
     navigate('/');
-  };
-
-  const dragOver = e => {
-    e.preventDefault();
-    return false;
-  };
-
-  const drop = (e, instance) => {
-    const { docViewer } = instance;
-    const scrollElement = docViewer.getScrollViewElement();
-    const scrollLeft = scrollElement.scrollLeft || 0;
-    const scrollTop = scrollElement.scrollTop || 0;
-    setDropPoint({ x: e.pageX + scrollLeft, y: e.pageY + scrollTop });
-    e.preventDefault();
-    return false;
-  };
-
-  const dragStart = e => {
-    e.target.style.opacity = 0.5;
-    const copy = e.target.cloneNode(true);
-    copy.id = 'form-build-drag-image-copy';
-    copy.style.width = '250px';
-    document.body.appendChild(copy);
-    e.dataTransfer.setDragImage(copy, 125, 25);
-    e.dataTransfer.setData('text', '');
-  };
-
-  const dragEnd = (e, type) => {
-    addField(type, dropPoint);
-    e.target.style.opacity = 1;
-    document.body.removeChild(
-      document.getElementById('form-build-drag-image-copy'),
-    );
-    e.preventDefault();
   };
 
   return (
@@ -355,46 +317,28 @@ const PrepareDocument = () => {
                   />
                 </Box>
                 <Box padding={2}>
-                  <div
-                    draggable
-                    onDragStart={e => dragStart(e)}
-                    onDragEnd={e => dragEnd(e, 'SIGNATURE')}
-                  >
-                    <Button
-                      onClick={() => addField('SIGNATURE')}
-                      accessibilityLabel="add signature"
-                      text="Add signature"
-                      iconEnd="compose"
-                    />
-                  </div>
+                  <Button
+                    onClick={() => addField('SIGNATURE')}
+                    accessibilityLabel="add signature"
+                    text="Add signature"
+                    iconEnd="compose"
+                  />
                 </Box>
                 <Box padding={2}>
-                  <div
-                    draggable
-                    onDragStart={e => dragStart(e)}
-                    onDragEnd={e => dragEnd(e, 'TEXT')}
-                  >
-                    <Button
-                      onClick={() => addField('TEXT')}
-                      accessibilityLabel="add text"
-                      text="Add text"
-                      iconEnd="text-sentence-case"
-                    />
-                  </div>
+                  <Button
+                    onClick={() => addField('TEXT')}
+                    accessibilityLabel="add text"
+                    text="Add text"
+                    iconEnd="text-sentence-case"
+                  />
                 </Box>
                 <Box padding={2}>
-                  <div
-                    draggable
-                    onDragStart={e => dragStart(e)}
-                    onDragEnd={e => dragEnd(e, 'DATE')}
-                  >
-                    <Button
-                      onClick={() => addField('DATE')}
-                      accessibilityLabel="add date field"
-                      text="Add date"
-                      iconEnd="calendar"
-                    />
-                  </div>
+                  <Button
+                    onClick={() => addField('DATE')}
+                    accessibilityLabel="add date field"
+                    text="Add date"
+                    iconEnd="calendar"
+                  />
                 </Box>
               </Stack>
             </Row>
@@ -407,6 +351,14 @@ const PrepareDocument = () => {
                   <Button
                     onClick={applyFields}
                     accessibilityLabel="Send for signing"
+                    text="Send"
+                    iconEnd="send"
+                  />
+                </Box>
+                <Box padding={2}>
+                  <Button
+                    onClick={upload}
+                    accessibilityLabel="Upload"
                     text="Send"
                     iconEnd="send"
                   />

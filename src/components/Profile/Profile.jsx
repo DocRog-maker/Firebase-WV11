@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -25,18 +25,18 @@ const ProfilePage = () => {
   const { displayName, photoURL, email } = user;
 
 
-  const [dNameForAvatar, setDName]=useState("");
+  const [dNameForAvatar, setDName] = useState("");
   useEffect(() => {
-    if (!displayName){
-      setDName (Array.from(email)[0])
+    if (!displayName) {
+      setDName(Array.from(email)[0])
     }
-    else{
+    else {
       setDName(displayName)
     }
   }, [displayName]);
-  
+
   return (
- 
+
     <Box display="flex" direction="row" paddingY={2} color={'lightGray'}>
       <Column span={9}>
         <Box padding={3}>

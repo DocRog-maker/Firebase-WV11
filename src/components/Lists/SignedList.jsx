@@ -28,12 +28,11 @@ const SignedList = () => {
     num = num.toString();
     while (num.length < size) num = "0" + num;
     return num;
-}
-  const getTime=(signedTime) =>
-  {
-    const t = signedTime*1000;
+  }
+  const getTime = (signedTime) => {
+    const t = signedTime * 1000;
     const dt = new Date(t);
-    const res =  dt.toDateString() + ' at ' +  pad(dt.getHours(),2) + ':' + pad(dt.getMinutes(), 2)
+    const res = dt.toDateString() + ' at ' + pad(dt.getHours(), 2) + ':' + pad(dt.getMinutes(), 2)
     return res
   }
   return (
@@ -63,7 +62,7 @@ const SignedList = () => {
                       ))}
                     </Table.Cell>
                     <Table.Cell>
-                      <Text>{doc.signedTime ? getTime(doc.signedTime.seconds): ''}</Text>
+                      <Text>{doc.signedTime ? getTime(doc.signedTime.seconds) : ''}</Text>
                     </Table.Cell>
                     <Table.Cell>
                       <Button

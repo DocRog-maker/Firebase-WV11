@@ -12,17 +12,17 @@ const ViewDocument = () => {
   const [instance, setInstance] = useState(null);
 
   const doc = useSelector(selectDocToView);
-  if (!doc)
-  {
+  if (!doc) {
     console.log('No doc');
     navigate('/')
   }
   const viewer = useRef(null);
 
   useEffect(() => {
-    WebViewer.Iframe(
+    WebViewer(
       {
         path: 'webviewer',
+        ui: 'legacy',
         disabledElements: [
           'ribbons',
           'toggleNotesButton',
@@ -31,17 +31,17 @@ const ViewDocument = () => {
       },
       viewer.current,
     ).then(async instance => {
-      if (doc){
-      // select only the view group
-      instance.UI.setToolbarGroup('toolbarGroup-View');
+      if (doc) {
+        // select only the view group
+        instance.UI.setToolbarGroup('toolbarGroup-View');
 
-      setInstance(instance);
-      const { docRef } = doc;
-       const URL = await  getURL(docRef)
-      instance.Core.documentViewer.loadDocument(URL);
+        setInstance(instance);
+        const { docRef } = doc;
+        const URL = await getURL(docRef)
+        await instance.Core.documentViewer.loadDocument(URL);
+      }
     }
-  }
-  );
+    );
   }, [doc]);
 
   const download = () => instance.UI.downloadPdf(true);

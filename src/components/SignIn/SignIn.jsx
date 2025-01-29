@@ -19,7 +19,6 @@ const SignIn =  () => {
   const [error, setError] = useState(null);
 
   const signInWithEmailAndPasswordHandler = async (event, email, password) => {
-    console.log(email)
     await signInWithEmailAndPwd(email, password)
   };
 
