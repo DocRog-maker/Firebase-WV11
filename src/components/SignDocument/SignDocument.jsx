@@ -24,6 +24,7 @@ const SignDocument = () => {
     WebViewer(
       {
         path: 'webviewer',
+        // You can configure the UI in many ways. For now leave it as legacy, but feel free to try the modular UI
         ui: 'legacy',
         disabledElements: [
           'ribbons',
@@ -38,10 +39,15 @@ const SignDocument = () => {
           'redo',
           'eraserToolButton'
         ],
+        // full API is needed as we will use the PDFNet object to manipulate the PDF content
         fullAPI: true
       },
       viewer.current,
     ).then(async instance => {
+
+      // In WV11 the default mechanism for signing documents changed from Annotation to Appearance, 
+      // which is great for supporting Digital Signatures.
+      // However for this sample we are relying on them being Annotations, so explicitly set that.
       const tool = instance.Core.documentViewer.getTool('AnnotationCreateSignature');
       tool.setSigningMode(instance.Core.Tools.SignatureCreateTool.SigningModes.ANNOTATION);
 
@@ -90,7 +96,6 @@ const SignDocument = () => {
   }, [doc, email]);
 
   const nextField = () => {
-
     let annots = annotationManager.getAnnotationsList();
     if (annots[annotPosition]) {
       annotationManager.jumpToAnnotation(annots[annotPosition]);
@@ -113,9 +118,7 @@ const SignDocument = () => {
   const completeSigning = async () => {
     const xfdfSigned = await annotationManager.exportAnnotations({ widgets: false, links: false });
     const docId = doc.docId
-
     const docRef1 = getDocRefSimpleQuery('documentsToSign', docId)
-
     const docSnap = await getDocSnap(docRef1).catch(function (error) {
       console.log('Error getting document:', error);
     });

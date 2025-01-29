@@ -21,17 +21,13 @@ const SignUp = () => {
   const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
     try{
       const user = await createUserWithEmailAndPwd(email, password);
-
+      console.log('user')
      console.log(user)
       await generateUserDocument(user, {displayName});
     }
     catch(error){
       setError('Error Signing up with email and password');
     }
-
-    // setEmail("");
-    // setPassword("");
-    // setDisplayName("");
   };
 
   return (

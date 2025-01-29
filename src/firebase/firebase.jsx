@@ -4,6 +4,7 @@ import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, createUserWith
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
+  //Store these values in a .env file or just copy them from firebase console
   apiKey: import.meta.env.VITE_REACT_APP_API_KEY,
   authDomain: import.meta.env.VITE_REACT_APP_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_REACT_APP_DATABASE_URL,
@@ -25,9 +26,11 @@ export const signInWithGoogle = () => {
 };
 
 export const createUserWithEmailAndPwd = async (email, password) => {
+  console.log('A1')
   const { user } = await createUserWithEmailAndPassword(auth, email, password).catch(function (error) {
     console.log('Error creating user:', error);
   });
+  console.log('A2')
   return user;
 }
 
