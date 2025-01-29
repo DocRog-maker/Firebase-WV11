@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, navigate } from '@reach/router';
-import { signInWithGoogle, signInWithEmailAndPwd } from '../../firebase/firebase';
+import { signInWithEmailAndPwd } from '../../firebase/firebase';
 
 import {
   Box,
@@ -62,12 +62,6 @@ const SignIn =  () => {
             />
           </Box>
 
-          <Box padding={2}>
-            <Text>or</Text>
-          </Box>
-          <Box padding={2}>
-            <Button onClick={signInWithGoogle} text="Sign in with Google" color="red" inline />
-          </Box>
           <Box padding={2}>
             <Text>Don't have an account?</Text>
           </Box>

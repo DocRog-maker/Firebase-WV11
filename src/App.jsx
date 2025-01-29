@@ -9,7 +9,6 @@ import Preparation from './components/Preparation';
 import Sign from './components/Sign';
 import View from './components/View';
 import Header from './components/Header';
-import PasswordReset from './components/PasswordReset/PasswordReset';
 import Welcome from './components/Welcome';
 
 import { auth, generateUserDocument } from './firebase/firebase';
@@ -47,7 +46,6 @@ const App = () => {
       <Router>
         <SignIn path="/" />
         <SignUp path="signUp" />
-        <PasswordReset path="passwordReset" />
       </Router>
     </div>
   );
