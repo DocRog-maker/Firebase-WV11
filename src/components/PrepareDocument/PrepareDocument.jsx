@@ -21,7 +21,7 @@ import './PrepareDocument.css';
 
 const PrepareDocument = () => {
   const [instance, setInstance] = useState(null);
-
+  const [fieldsApplied, setFieldsApplied] = useState(false);
   const dispatch = useDispatch();
 
   const assignees = useSelector(selectAssignees);
@@ -184,6 +184,7 @@ const PrepareDocument = () => {
         fieldManager.addField(field);
         annotsToDraw.push(inputAnnot);
       }),
+      setFieldsApplied(true)
     );
 
     // delete old annotations
@@ -194,6 +195,11 @@ const PrepareDocument = () => {
   }
 
   const upload = async () => {
+    // If the user hasn't pressed the ApplyFields button then do it here
+    // It can be done as a single step, but it's interesting to see what happens, so I have split it into two
+    if (!fieldsApplied){
+      await applyFields();
+    }
     await uploadForSigning();
   };
 
@@ -350,9 +356,9 @@ const PrepareDocument = () => {
                 <Box padding={2}>
                   <Button
                     onClick={applyFields}
-                    accessibilityLabel="Send for signing"
-                    text="Send"
-                    iconEnd="send"
+                    accessibilityLabel="ApplyFields"
+                    text="Apply Fields"
+                    iconEnd="cog"
                   />
                 </Box>
                 <Box padding={2}>
