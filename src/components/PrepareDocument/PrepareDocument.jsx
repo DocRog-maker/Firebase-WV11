@@ -371,7 +371,7 @@ const PrepareDocument = () => {
           <div className="webviewer" ref={viewer}></div>
         </Column>
       </Box>
-      <input type="file" ref={filePicker} style={{ display: 'none' }} />
+      <input type="file" ref={filePicker} style={{ display: 'none' }} accept="application/pdf"/>
     </div>
   );
 };
