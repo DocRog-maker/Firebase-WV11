@@ -3,3 +3,5 @@
 This is the sample code that is used within a couple of blogs from Apryse.
 
 In order to use it you will need to set up Firebase, and copy the environment values into a .env file.
+
+The sample code was tested with Node 18.
