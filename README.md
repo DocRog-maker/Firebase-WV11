@@ -1,8 +1,5 @@
-# React + Vite
+# Creating a collabrative PDF signing tool using Apryse and Firebase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the sample code that is used within a couple of blogs from Apryse.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+In order to use it you will need to set up Firebase, and copy the environment values into a .env file.
