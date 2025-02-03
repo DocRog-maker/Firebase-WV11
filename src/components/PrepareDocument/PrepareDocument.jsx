@@ -21,6 +21,7 @@ import './PrepareDocument.css';
 
 const PrepareDocument = () => {
   const [instance, setInstance] = useState(null);
+  const [dropPoint, setDropPoint] = useState(null);
   const [fieldsApplied, setFieldsApplied] = useState(false);
   const dispatch = useDispatch();
 
@@ -39,8 +40,10 @@ const PrepareDocument = () => {
   const filePicker = useRef(null);
 
   // if using a class, equivalent of componentDidMount
+  // As an example of the option, we are using Iframe here. The default is WebComponent
+  // If you choose to use WebComponent then you will have to modify the drag and drop code.
   useEffect(() => {
-    WebViewer(
+    WebViewer.Iframe(
       {
         path: 'webviewer',
         ui: 'legacy',
@@ -53,18 +56,24 @@ const PrepareDocument = () => {
       },
       viewer.current,
     ).then(instance => {
-
       // select only the view group
       instance.UI.setToolbarGroup('toolbarGroup-View');
 
       setInstance(instance);
 
+      const { iframeWindow } = instance.UI;
+      const iframeDoc = iframeWindow.document.body;
+      iframeDoc.addEventListener('dragover', dragOver);
+      iframeDoc.addEventListener('drop', e => {
+        drop(e, instance);
+      });
       filePicker.current.onchange = e => {
         const file = e.target.files[0];
         if (file) {
           instance.UI.loadDocument(file);
         }
       };
+
     });
   }, []);
 
@@ -197,7 +206,7 @@ const PrepareDocument = () => {
   const upload = async () => {
     // If the user hasn't pressed the ApplyFields button then do it here
     // It can be done as a single step, but it's interesting to see what happens, so I have split it into two
-    if (!fieldsApplied){
+    if (!fieldsApplied) {
       await applyFields();
     }
     await uploadForSigning();
@@ -279,6 +288,40 @@ const PrepareDocument = () => {
     navigate('/');
   };
 
+  const dragOver = e => {
+    e.preventDefault();
+    return false;
+  };
+
+  const drop = (e, instance) => {
+    const documentViewer = instance.Core.documentViewer;
+    const scrollElement = documentViewer.getScrollViewElement();
+    const scrollLeft = scrollElement.scrollLeft || 0;
+    const scrollTop = scrollElement.scrollTop || 0;
+    setDropPoint({ x: e.pageX + scrollLeft, y: e.pageY + scrollTop });
+    e.preventDefault();
+    return false;
+  };
+
+  const dragStart = e => {
+    e.target.style.opacity = 0.5;
+    const copy = e.target.cloneNode(true);
+    copy.id = 'form-build-drag-image-copy';
+    copy.style.width = '250px';
+    document.body.appendChild(copy);
+    e.dataTransfer.setDragImage(copy, 125, 25);
+    e.dataTransfer.setData('text', '');
+  };
+
+  const dragEnd = (e, type) => {
+    addField(type, dropPoint);
+    e.target.style.opacity = 1;
+    document.body.removeChild(
+      document.getElementById('form-build-drag-image-copy'),
+    );
+    e.preventDefault();
+  };
+
   return (
     <div className={'prepareDocument'}>
       <Box display="flex" direction="row" flex="grow">
@@ -323,28 +366,46 @@ const PrepareDocument = () => {
                   />
                 </Box>
                 <Box padding={2}>
-                  <Button
-                    onClick={() => addField('SIGNATURE')}
-                    accessibilityLabel="add signature"
-                    text="Add signature"
-                    iconEnd="compose"
-                  />
+                  <div
+                    draggable
+                    onDragStart={e => dragStart(e)}
+                    onDragEnd={e => dragEnd(e, 'SIGNATURE')}
+                  >
+                    <Button
+                      onClick={() => addField('SIGNATURE')}
+                      accessibilityLabel="add signature"
+                      text="Add signature"
+                      iconEnd="compose"
+                    />
+                  </div>
                 </Box>
                 <Box padding={2}>
-                  <Button
-                    onClick={() => addField('TEXT')}
-                    accessibilityLabel="add text"
-                    text="Add text"
-                    iconEnd="text-sentence-case"
-                  />
+                  <div
+                    draggable
+                    onDragStart={e => dragStart(e)}
+                    onDragEnd={e => dragEnd(e, 'TEXT')}
+                  >
+                    <Button
+                      onClick={() => addField('TEXT')}
+                      accessibilityLabel="add text"
+                      text="Add text"
+                      iconEnd="text-sentence-case"
+                    />
+                  </div>
                 </Box>
                 <Box padding={2}>
-                  <Button
-                    onClick={() => addField('DATE')}
-                    accessibilityLabel="add date field"
-                    text="Add date"
-                    iconEnd="calendar"
-                  />
+                  <div
+                    draggable
+                    onDragStart={e => dragStart(e)}
+                    onDragEnd={e => dragEnd(e, 'DATE')}
+                  >
+                    <Button
+                      onClick={() => addField('DATE')}
+                      accessibilityLabel="add date field"
+                      text="Add date"
+                      iconEnd="calendar"
+                    />
+                  </div>
                 </Box>
               </Stack>
             </Row>
@@ -377,7 +438,7 @@ const PrepareDocument = () => {
           <div className="webviewer" ref={viewer}></div>
         </Column>
       </Box>
-      <input type="file" ref={filePicker} style={{ display: 'none' }} accept="application/pdf"/>
+      <input type="file" ref={filePicker} style={{ display: 'none' }} accept="application/pdf" />
     </div>
   );
 };
