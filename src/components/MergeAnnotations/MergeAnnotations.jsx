@@ -9,7 +9,6 @@ export const mergeAnnotations = async (Core, PDFNet, docRef, xfdf) => {
     doc.initSecurityHandler();
     let i;
     for (i = 0; i < xfdf.length; i++) {
-      console.log(xfdf[i]);
       let fdfDoc = await PDFNet.FDFDoc.createFromXFDF(xfdf[i]);
       await doc.fdfMerge(fdfDoc);
       await doc.flattenAnnotations();

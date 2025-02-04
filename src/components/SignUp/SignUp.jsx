@@ -8,7 +8,7 @@ import {
     Container,
     Text,
     TextField,
-    Heading,
+    Heading
   } from 'gestalt';
 import 'gestalt/dist/gestalt.css';
 
@@ -21,8 +21,6 @@ const SignUp = () => {
   const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
     try{
       const user = await createUserWithEmailAndPwd(email, password);
-      console.log('user')
-     console.log(user)
       await generateUserDocument(user, {displayName});
     }
     catch(error){

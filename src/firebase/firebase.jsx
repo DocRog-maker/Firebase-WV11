@@ -21,11 +21,9 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 export const createUserWithEmailAndPwd = async (email, password) => {
-  console.log('A1')
   const { user } = await createUserWithEmailAndPassword(auth, email, password).catch(function (error) {
     console.log('Error creating user:', error);
   });
-  console.log('A2')
   return user;
 }
 
